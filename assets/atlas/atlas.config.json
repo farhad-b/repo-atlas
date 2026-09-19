@@ -1,0 +1,14 @@
+{
+  "_comment": "Read by tools/*.mjs. Paths are relative to this file.",
+  "title": "{{TITLE}}",
+  "repo": "{{REPO}}",
+  "clone": "{{CLONE}}",
+  "guide": "guide",
+  "port": {{PORT}},
+  "quotes": {
+    "_comment": "Where a <q> quotation may come from, and the per-file size cap.",
+    "dirs": ["."],
+    "exts": [".rs", ".go", ".py", ".ts", ".js", ".md", ".toml"],
+    "maxKB": 512
+  }
+}

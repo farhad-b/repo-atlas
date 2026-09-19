@@ -1,0 +1,16 @@
+{
+  "_comment": "Every excerpt in the guide is declared here by unique anchor TEXT, never a bare line number. `node tools/extract-snippets.mjs --check` fails loudly if an anchor stops resolving, so the guide can never quietly drift from the source. See references/manifest.md in the repo-atlas skill for the full option list.",
+  "_example": {
+    "id": "kebab-case-id-used-by-snip",
+    "path": "src/thing.rs",
+    "start": "/// A distinctive line at the top of the excerpt",
+    "end": "}",
+    "startOffset": 0,
+    "endOffset": 0,
+    "lines": 12,
+    "elide": [["#[derive(", ")]"]],
+    "lang": "rust",
+    "dedent": true
+  },
+  "snippets": []
+}

@@ -1,0 +1,396 @@
+/* ============================================================================
+   components.css — chapter furniture: headers, snippets, pattern cards, traps.
+   ========================================================================= */
+
+/* ---- chapter head ------------------------------------------------------ */
+.chead { margin-bottom: var(--s7); }
+
+.chead__eyebrow {
+  display: flex; align-items: center; gap: var(--s3);
+  font-size: var(--fs-micro); font-weight: 700;
+  letter-spacing: .1em; text-transform: uppercase;
+  color: var(--accent-ink);
+  margin-bottom: var(--s4);
+}
+.chead__eyebrow::after {
+  content: ""; flex: 1; height: 1px;
+  background: linear-gradient(to right, color-mix(in srgb, var(--accent) 45%, transparent), transparent);
+}
+.chead__n {
+  display: grid; place-items: center;
+  width: 1.5rem; height: 1.5rem; border-radius: 50%;
+  background: var(--accent-ink); color: var(--bg);
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0;
+  flex: none;
+}
+
+.chead h1 {
+  font-family: var(--font-display);
+  font-size: var(--fs-h1); font-weight: 600;
+  line-height: 1.12; letter-spacing: -0.018em;
+  color: var(--ink-strong);
+  margin: 0;
+  text-wrap: balance;
+}
+
+.chead__lead {
+  font-size: var(--fs-lead);
+  line-height: 1.6;
+  color: var(--ink-soft);
+  margin-top: var(--s4);
+  text-wrap: pretty;
+}
+
+/* ---- the question this chapter answers --------------------------------- */
+.problem {
+  margin: var(--s6) 0;
+  padding: var(--s5);
+  background: var(--accent-wash);
+  border-radius: var(--radius);
+  border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
+}
+.problem__label {
+  font-size: var(--fs-micro); font-weight: 700;
+  letter-spacing: .1em; text-transform: uppercase;
+  color: var(--accent-ink);
+  margin-bottom: var(--s2);
+}
+.problem p { margin: 0; color: var(--ink); }
+.problem p + p { margin-top: var(--s3); }
+
+/* ---- code snippet ------------------------------------------------------ */
+.snip {
+  margin: var(--s6) 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--bg-code);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.snip__head {
+  display: flex; align-items: center; gap: var(--s2);
+  padding: var(--s2) var(--s3) var(--s2) var(--s4);
+  background: var(--bg-sunk);
+  border-bottom: 1px solid var(--line);
+  font-family: var(--font-mono);
+  font-size: var(--fs-micro);
+  color: var(--ink-faint);
+  min-height: 2.25rem;
+}
+.snip__path {
+  color: var(--ink-soft);
+  text-decoration: none;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  direction: rtl; text-align: left;   /* keep the filename visible when clipped */
+}
+.snip__path:hover { color: var(--accent-ink); }
+.snip__path b { font-weight: 600; color: var(--ink-strong); }
+.snip__lines { flex: none; color: var(--ink-faint); }
+.snip__spacer { flex: 1; min-width: var(--s2); }
+
+.snip__btn {
+  display: grid; place-items: center;
+  width: 26px; height: 26px; border-radius: var(--radius-sm);
+  color: var(--ink-faint); flex: none;
+}
+.snip__btn:hover { background: var(--bg-inset); color: var(--ink-strong); }
+.snip__btn svg { width: 14px; height: 14px; }
+.snip__btn.is-done { color: var(--ok); }
+
+.snip__body {
+  overflow-x: auto;
+  padding: var(--s4) 0;
+  font-family: var(--font-mono);
+  font-size: var(--fs-code);
+  line-height: var(--lh-code);
+  tab-size: 4;
+}
+.snip__body pre { margin: 0; }
+.snip__body code { display: block; white-space: pre; }
+
+.ln {
+  display: block;
+  padding-inline: var(--s4) var(--s5);
+  position: relative;
+}
+.ln > i {
+  display: inline-block;
+  width: 2.75em; margin-right: var(--s4);
+  text-align: right;
+  /* The gutter carries real file line numbers, so it stays at full opacity
+     and is separated from the code by position, not by being washed out. */
+  color: var(--ink-faint);
+  font-style: normal;
+  user-select: none;
+  font-variant-numeric: tabular-nums;
+}
+.ln--hl {
+  /* Kept light: a heavier wash pushes syntax colours below AA on this row. */
+  background: color-mix(in srgb, var(--accent) 3%, transparent);
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+.ln--hl > i { color: var(--accent-ink); font-weight: 600; }
+
+/* numbered callout chip, sits at the end of a line */
+.co {
+  display: inline-grid; place-items: center;
+  width: 1.15em; height: 1.15em; margin-left: .8em;
+  border-radius: 50%;
+  background: var(--accent); color: var(--bg);
+  font-size: .78em; font-family: var(--font-sans); font-weight: 700;
+  vertical-align: middle;
+  user-select: none;
+}
+
+.snip__notes {
+  border-top: 1px dashed var(--line);
+  background: var(--bg-raised);
+  padding: var(--s4) var(--s5);
+  display: grid; gap: var(--s3);
+  font-size: var(--fs-small);
+  line-height: 1.55;
+}
+.snip__note { display: grid; grid-template-columns: 1.35em 1fr; gap: var(--s3); align-items: start; }
+.snip__note .co { margin: .15em 0 0; }
+.snip__note code { font-size: .92em; }
+
+/* A run of lines the excerpt hides — a derive block, an import list. The lines
+   are still tokenised so colouring stays correct; only the display is skipped,
+   and the gutter keeps counting real file lines on either side. */
+.snip__elide {
+  color: var(--ink-faint); user-select: none; letter-spacing: .35em;
+  opacity: .5;
+}
+.snip__elide > i { letter-spacing: 0; }
+
+.snip__caption {
+  font-size: var(--fs-small);
+  color: var(--ink-soft);
+  margin: calc(var(--s5) * -1 + 2px) 0 var(--s6);
+  padding-left: var(--s4);
+  border-left: 2px solid var(--line);
+  line-height: 1.5;
+}
+
+/* syntax colours */
+.t-com { color: var(--syn-comment); font-style: italic; }
+.t-doc { color: var(--syn-doc); font-style: italic; }
+.t-key { color: var(--syn-key); }
+.t-fn  { color: var(--syn-fn); }
+.t-typ { color: var(--syn-type); }
+.t-str { color: var(--syn-str); }
+.t-num { color: var(--syn-num); }
+.t-att { color: var(--syn-attr); }
+.t-pun { color: var(--syn-punct); }
+.t-mac { color: var(--syn-macro); }
+
+/* ---- "the pattern" card ------------------------------------------------ */
+.pattern {
+  margin: var(--s7) 0;
+  border: 1px solid color-mix(in srgb, var(--accent) 34%, var(--line));
+  border-radius: var(--radius-lg);
+  background: var(--bg-raised);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+.pattern__head {
+  display: flex; align-items: center; gap: var(--s3);
+  padding: var(--s3) var(--s5);
+  background: var(--accent-wash);
+  border-bottom: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
+}
+.pattern__head svg { width: 15px; height: 15px; color: var(--accent-ink); flex: none; }
+.pattern__label {
+  font-size: var(--fs-micro); font-weight: 800;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: var(--accent-ink);
+}
+.pattern__title { font-size: var(--fs-small); color: var(--ink-soft); margin-left: auto; text-align: right; }
+
+.pattern__body { padding: var(--s5); }
+.pattern__body > * + * { margin-top: var(--s4); }
+
+.pattern ol.inv { counter-reset: inv; list-style: none; padding: 0; margin: 0; display: grid; gap: var(--s3); }
+
+/* Deliberately NOT display:grid on the li. Each child *element* would become
+   its own grid item, so `<strong>lead-in</strong> then prose` would split into
+   two items and the prose would land in the 1.5rem counter column. Absolute
+   positioning keeps the whole li one continuous text flow. */
+.pattern ol.inv > li {
+  counter-increment: inv;
+  position: relative;
+  padding-left: 2.25rem;
+  margin: 0;
+  line-height: 1.55;
+}
+.pattern ol.inv > li::before {
+  content: counter(inv);
+  position: absolute; left: 0; top: .1em;
+  display: grid; place-items: center;
+  width: 1.5rem; height: 1.5rem; border-radius: 50%;
+  background: var(--accent-wash);
+  border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+  color: var(--accent-ink);
+  font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+}
+
+.pseudo {
+  background: var(--bg-code);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: var(--s4);
+  font-family: var(--font-mono);
+  font-size: var(--fs-code);
+  line-height: 1.65;
+  overflow-x: auto;
+  color: var(--ink);
+  tab-size: 2;
+}
+.pseudo pre { margin: 0; white-space: pre; }
+.pseudo .t-com { color: var(--syn-comment); }
+
+/* ---- traps ------------------------------------------------------------- */
+.traps {
+  margin: var(--s7) 0;
+  border: 1px solid color-mix(in srgb, var(--danger) 28%, var(--line));
+  border-left-width: 3px;
+  border-left-color: var(--danger);
+  border-radius: var(--radius);
+  background: var(--bg-raised);
+  overflow: hidden;
+}
+.traps__head {
+  display: flex; align-items: center; gap: var(--s3);
+  padding: var(--s3) var(--s5);
+  background: var(--danger-wash);
+  border-bottom: 1px solid color-mix(in srgb, var(--danger) 20%, transparent);
+  font-size: var(--fs-micro); font-weight: 800;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: var(--danger);
+}
+.traps__head svg { width: 15px; height: 15px; flex: none; }
+.traps__body { padding: var(--s4) var(--s5); display: grid; gap: var(--s4); }
+.trap__t { font-weight: 650; color: var(--ink-strong); line-height: 1.4; }
+.trap__b { font-size: 0.9375rem; color: var(--ink-soft); line-height: 1.6; margin-top: 2px; }
+
+/* ---- key insight pull-out ---------------------------------------------- */
+.keyfact {
+  margin: var(--s6) 0;
+  padding: var(--s5) var(--s5) var(--s5) var(--s6);
+  border-left: 3px solid var(--accent);
+  background: linear-gradient(to right, var(--accent-wash), transparent 85%);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  font-family: var(--font-display);
+  font-size: 1.1875rem; line-height: 1.5;
+  color: var(--ink-strong);
+  text-wrap: pretty;
+}
+.keyfact strong { font-weight: 700; }
+
+/* ---- read next --------------------------------------------------------- */
+.readnext {
+  margin: var(--s7) 0 0;
+  border-top: 1px solid var(--line);
+  padding-top: var(--s5);
+}
+.readnext__label {
+  font-size: var(--fs-micro); font-weight: 700;
+  letter-spacing: .1em; text-transform: uppercase;
+  color: var(--ink-faint); margin-bottom: var(--s3);
+}
+.readnext ul { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--s3); }
+.readnext li { display: grid; gap: 2px; margin: 0; }
+.readnext code {
+  font-family: var(--font-mono); font-size: var(--fs-small);
+  color: var(--accent-ink); background: none; border: 0; padding: 0;
+  white-space: normal; word-break: break-all;
+}
+.readnext span { font-size: var(--fs-small); color: var(--ink-soft); line-height: 1.5; }
+
+/* ---- misc content blocks ----------------------------------------------- */
+.cols { display: grid; gap: var(--s4); grid-template-columns: 1fr 1fr; margin: var(--s6) 0; }
+@media (max-width: 720px) { .cols { grid-template-columns: 1fr; } }
+
+.card {
+  border: 1px solid var(--line); border-radius: var(--radius);
+  background: var(--bg-raised); padding: var(--s4) var(--s5);
+}
+.card__t {
+  font-size: var(--fs-micro); font-weight: 700; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--ink-faint); margin-bottom: var(--s2);
+}
+.card p { margin: 0; font-size: 0.9375rem; line-height: 1.6; }
+.card p + p { margin-top: var(--s3); }
+.card--good { border-left: 3px solid var(--ok); }
+.card--bad  { border-left: 3px solid var(--danger); }
+.card--good .card__t { color: var(--ok); }
+.card--bad  .card__t { color: var(--danger); }
+
+/* stat strip */
+.stats {
+  display: grid; grid-auto-flow: column; grid-auto-columns: 1fr;
+  gap: 1px; background: var(--line);
+  border: 1px solid var(--line); border-radius: var(--radius);
+  overflow: hidden; margin: var(--s6) 0;
+}
+.stat { background: var(--bg-raised); padding: var(--s4) var(--s4); }
+.stat__v {
+  font-family: var(--font-mono); font-size: 1.375rem; font-weight: 600;
+  color: var(--accent-ink); line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+.stat__l { font-size: var(--fs-micro); color: var(--ink-faint); margin-top: 4px; line-height: 1.35; }
+@media (max-width: 640px) { .stats { grid-auto-flow: row; } }
+
+/* ---- home page --------------------------------------------------------- */
+.hero { padding: var(--s5) 0 var(--s7); }
+.hero__kicker {
+  font-family: var(--font-mono); font-size: var(--fs-small);
+  color: var(--accent-ink); letter-spacing: .04em; margin-bottom: var(--s4);
+}
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: var(--fs-display); font-weight: 600;
+  line-height: 1.06; letter-spacing: -0.022em;
+  color: var(--ink-strong); margin: 0;
+  text-wrap: balance;
+}
+.hero__lead {
+  font-size: var(--fs-lead); line-height: 1.62; color: var(--ink-soft);
+  margin-top: var(--s5); text-wrap: pretty;
+}
+
+.parts { display: grid; gap: var(--s4); margin: var(--s7) 0; }
+.partcard {
+  display: block; text-decoration: none; color: inherit;
+  border: 1px solid var(--line); border-left: 3px solid var(--part);
+  border-radius: var(--radius);
+  background: var(--bg-raised);
+  padding: var(--s4) var(--s5);
+  transition: border-color .15s, transform .15s, box-shadow .15s;
+}
+.partcard:hover { transform: translateY(-1px); box-shadow: var(--shadow); border-color: var(--part); border-left-color: var(--part); }
+.partcard__top { display: flex; align-items: baseline; gap: var(--s3); }
+.partcard__num {
+  font-family: var(--font-mono); font-size: var(--fs-micro);
+  font-weight: 700; color: var(--part-ink); letter-spacing: .06em;
+}
+.partcard__title { font-family: var(--font-display); font-size: 1.1875rem; font-weight: 600; color: var(--ink-strong); }
+.partcard__desc { font-size: var(--fs-small); color: var(--ink-soft); margin-top: 4px; line-height: 1.55; }
+.partcard__chapters {
+  display: flex; flex-wrap: wrap; gap: var(--s2);
+  margin-top: var(--s3);
+}
+.chip {
+  font-size: var(--fs-micro); color: var(--ink-soft);
+  background: var(--bg-inset); border: 1px solid var(--line-soft);
+  border-radius: 100px; padding: 2px 9px; line-height: 1.5;
+}
+
+/* A quotation of the source. tools/check-content.mjs checks that each
+   <q> is word for word in the clone, so reserve <q> for source text only. */
+.prose q {
+  font-style: italic;
+  quotes: "“" "”" "‘" "’";
+}

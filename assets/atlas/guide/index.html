@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>{{TITLE}}</title>
+<meta name="description" content="{{TAGLINE}}">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230f1115'/><path d='M28 34 L16 50 L28 66 M72 34 L84 50 L72 66 M58 26 L42 74' stroke='%23e8b339' stroke-width='8' stroke-linecap='round' stroke-linejoin='round' fill='none'/></svg>">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/layout.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/css/widgets.css">
+<script>
+  // Apply the stored theme before first paint so the page never flashes.
+  try {
+    var t = localStorage.getItem('{{SLUG}}-theme');
+    if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+  } catch (e) {}
+</script>
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="topbar">
+  <button class="topbar__menu" id="menu-toggle" aria-label="Open navigation" aria-expanded="false">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+  </button>
+
+  <a class="brand" href="#/">
+    <svg class="brand__mark" viewBox="0 0 100 100" aria-hidden="true">
+      <path d="M28 34 L16 50 L28 66 M72 34 L84 50 L72 66 M58 26 L42 74"/>
+    </svg>
+    <span class="brand__text">
+      <span class="brand__title">{{TITLE}}</span>
+      <span class="brand__sub" id="pin-label">&nbsp;</span>
+    </span>
+  </a>
+
+  <div class="topbar__spacer"></div>
+
+  <button class="searchbtn" id="search-open">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+    <span>Search</span>
+    <kbd id="search-kbd">Ctrl K</kbd>
+  </button>
+
+  <button class="iconbtn" id="theme-toggle" aria-label="Toggle colour theme" title="Toggle colour theme">
+    <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6"/></svg>
+    <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.2 8.2 0 019.6 4a8.5 8.5 0 108.4 14.3 8.3 8.3 0 002-3.8z"/></svg>
+  </button>
+</header>
+
+<div class="shell">
+  <nav class="sidebar" id="sidebar" aria-label="Chapters">
+    <div class="sidebar__inner" id="nav-tree"></div>
+  </nav>
+
+  <div class="sidebar-scrim" id="sidebar-scrim" hidden></div>
+
+  <main class="main" id="main" tabindex="-1">
+    <article class="page" id="page"></article>
+    <nav class="pager" id="pager" aria-label="Chapter navigation"></nav>
+    <footer class="sitefoot">
+      <p>Built by reading <a id="foot-repo" href="https://github.com/{{REPO}}">{{REPO}}</a> at
+        <code id="foot-sha">…</code>. Every excerpt is extracted from that commit by
+        <code>tools/extract-snippets.mjs</code> and carries its real line numbers.</p>
+      <p class="sitefoot__dim">This guide is an independent reading of the source. It is not affiliated with or endorsed by the authors of {{REPO}}.</p>
+    </footer>
+  </main>
+
+  <aside class="rail" id="rail" aria-label="On this page"></aside>
+</div>
+
+<div class="searchmodal" id="searchmodal" hidden>
+  <div class="searchmodal__backdrop" data-close></div>
+  <div class="searchmodal__panel" role="dialog" aria-modal="true" aria-label="Search the guide">
+    <div class="searchmodal__field">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+      <input type="text" id="search-input" placeholder="Search chapters, patterns, source files…" autocomplete="off" spellcheck="false">
+      <kbd data-close>Esc</kbd>
+    </div>
+    <div class="searchmodal__results" id="search-results"></div>
+  </div>
+</div>
+
+<div class="progress" id="progress"><i></i></div>
+
+<script type="module" src="assets/js/app.js"></script>
+</body>
+</html>

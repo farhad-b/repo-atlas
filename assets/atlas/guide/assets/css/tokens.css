@@ -1,0 +1,210 @@
+/* ============================================================================
+   tokens.css — the whole palette and scale, in one place.
+
+   Light is the base. Dark redefines only the tokens whose *role* changes, once
+   under prefers-color-scheme (guarded so an explicit light choice wins) and
+   again under [data-theme="dark"] so the toggle wins in both directions.
+   ========================================================================= */
+
+:root {
+  color-scheme: light dark;
+
+  /* ---- type ------------------------------------------------------------ */
+  --font-display: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia,
+    "Times New Roman", serif;
+  --font-sans: ui-sans-serif, -apple-system, "Segoe UI Variable Text", "Segoe UI",
+    Inter, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, "Cascadia Code", "Cascadia Mono", "SF Mono",
+    "JetBrains Mono", Menlo, Consolas, monospace;
+
+  --fs-micro: 0.6875rem;   /* 11px  — labels, kbd, line numbers   */
+  --fs-small: 0.8125rem;   /* 13px  — captions, meta              */
+  --fs-code:  0.8125rem;
+  --fs-body:  1.0rem;      /* 16px  — prose                       */
+  --fs-lead:  1.1875rem;   /* 19px  — chapter lead                */
+  --fs-h3:    1.125rem;
+  --fs-h2:    1.5rem;
+  --fs-h1:    2.375rem;
+  --fs-display: 3rem;
+
+  --lh-tight: 1.25;
+  --lh-body: 1.72;
+  --lh-code: 1.6;
+
+  /* ---- space ----------------------------------------------------------- */
+  --s1: 4px;   --s2: 8px;   --s3: 12px;  --s4: 16px;
+  --s5: 24px;  --s6: 32px;  --s7: 48px;  --s8: 64px;  --s9: 96px;
+
+  --radius-sm: 5px;
+  --radius: 9px;
+  --radius-lg: 14px;
+
+  --measure: 41rem;          /* prose column                     */
+  --sidebar-w: 17.5rem;
+  --rail-w: 13rem;
+  --topbar-h: 3.5rem;
+
+  /* ---- neutrals (light) ------------------------------------------------ */
+  --bg:         #fbfaf7;     /* warm paper                        */
+  --bg-sunk:    #f2f0ea;
+  --bg-raised:  #ffffff;
+  --bg-code:    #f7f5f0;
+  --bg-inset:   #efece4;
+
+  --ink:        #1a1916;     /* body text                         */
+  --ink-strong: #08070a;
+  --ink-soft:   #565248;
+  --ink-faint:  #6b6557;   /* carries real text at 11px — kept at AA */
+
+  --line:       #e3ded2;
+  --line-soft:  #eeeae0;
+  --line-strong:#cfc8b8;
+
+  --shadow-sm: 0 1px 2px rgb(30 26 16 / .06), 0 1px 1px rgb(30 26 16 / .04);
+  --shadow:    0 4px 14px -4px rgb(30 26 16 / .12), 0 2px 4px -2px rgb(30 26 16 / .06);
+  --shadow-lg: 0 24px 60px -18px rgb(30 26 16 / .30), 0 8px 20px -12px rgb(30 26 16 / .16);
+
+  /* ---- part accents ----------------------------------------------------
+     One hue per Part, so the reader always knows where they are. Each has a
+     `-ink` (text on page ground) and a `-wash` (tint used as a ground).      */
+  --p1: #a4720b;  --p1-ink: #8a5f06;  --p1-wash: #fdf3dd;   /* Foundations  */
+  --p2: #0d7285;  --p2-ink: #0a6274;  --p2-wash: #e0f4f7;   /* Context      */
+  --p3: #6b4bc4;  --p3-ink: #5b3cb2;  --p3-wash: #eee9fd;   /* Tools        */
+  --p4: #b93a35;  --p4-ink: #a52e29;  --p4-wash: #fdeae8;   /* Safety       */
+  --p5: #2b7a3f;  --p5-ink: #226733;  --p5-wash: #e3f6e7;   /* Extension    */
+  --p6: #2a5fb8;  --p6-ink: #2251a4;  --p6-wash: #e6eefc;   /* Reliability  */
+  --p7: #a83a72;  --p7-ink: #932f62;  --p7-wash: #fce8f2;   /* Capstone     */
+
+  --accent: var(--p1);
+  --accent-ink: var(--p1-ink);
+  --accent-wash: var(--p1-wash);
+
+  --danger: #b93a35;
+  --danger-wash: #fdeae8;
+  --ok: #1f5c2d;
+
+  /* ---- syntax (light) -------------------------------------------------- */
+  --syn-comment: #665f54;
+  --syn-doc:     #576548;
+  --syn-key:     #9a3fa8;
+  --syn-fn:      #2251a4;
+  --syn-type:    #0a6274;
+  --syn-str:     #2f6f3a;
+  --syn-num:     #914d08;
+  --syn-attr:    #8a6009;
+  --syn-punct:   #646055;
+  --syn-macro:   #a52e29;
+
+  --sel: rgb(164 114 11 / .18);
+}
+
+/* --------------------------------------------------------------------------
+   Dark. `:not([data-theme="light"])` so an explicit light choice beats the OS.
+   ----------------------------------------------------------------------- */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --dark: 1; }
+}
+:root[data-theme="dark"] { --dark: 1; }
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg:        #101216;
+    --bg-sunk:   #0a0c0f;
+    --bg-raised: #171a20;
+    --bg-code:   #14171d;
+    --bg-inset:  #1b1f26;
+
+    --ink:        #dfe1e6;
+    --ink-strong: #f5f6f8;
+    --ink-soft:   #9aa0ab;
+    --ink-faint:  #868d9b;
+
+    --line:        #262b34;
+    --line-soft:   #1e222a;
+    --line-strong: #38404c;
+
+    --shadow-sm: 0 1px 2px rgb(0 0 0 / .5);
+    --shadow:    0 6px 20px -6px rgb(0 0 0 / .6), 0 2px 6px -3px rgb(0 0 0 / .5);
+    --shadow-lg: 0 28px 70px -20px rgb(0 0 0 / .8), 0 10px 24px -14px rgb(0 0 0 / .6);
+
+    --p1: #e8b339;  --p1-ink: #f0c360;  --p1-wash: #2a2313;
+    --p2: #4bc4d8;  --p2-ink: #6ed3e3;  --p2-wash: #10262b;
+    --p3: #a58cf5;  --p3-ink: #b9a6f8;  --p3-wash: #1f1b31;
+    --p4: #f0706a;  --p4-ink: #f68d88;  --p4-wash: #2e1817;
+    --p5: #5fca7c;  --p5-ink: #83d99a;  --p5-wash: #13261a;
+    --p6: #6f9ef0;  --p6-ink: #8fb4f4;  --p6-wash: #161f31;
+    --p7: #ee7ab0;  --p7-ink: #f298c3;  --p7-wash: #2c1723;
+
+    --danger: #f0706a;
+    --danger-wash: #2e1817;
+    --ok: #5fca7c;
+
+    --syn-comment: #868d9b;
+    --syn-doc:     #7f9a6d;
+    --syn-key:     #cf8ce0;
+    --syn-fn:      #7fb0f5;
+    --syn-type:    #5fc9db;
+    --syn-str:     #8ed49f;
+    --syn-num:     #e8a95e;
+    --syn-attr:    #d3ab5c;
+    --syn-punct:   #8d95a3;
+    --syn-macro:   #f0706a;
+
+    --sel: rgb(232 179 57 / .22);
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg:        #101216;
+  --bg-sunk:   #0a0c0f;
+  --bg-raised: #171a20;
+  --bg-code:   #14171d;
+  --bg-inset:  #1b1f26;
+
+  --ink:        #dfe1e6;
+  --ink-strong: #f5f6f8;
+  --ink-soft:   #9aa0ab;
+  --ink-faint:  #868d9b;
+
+  --line:        #262b34;
+  --line-soft:   #1e222a;
+  --line-strong: #38404c;
+
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / .5);
+  --shadow:    0 6px 20px -6px rgb(0 0 0 / .6), 0 2px 6px -3px rgb(0 0 0 / .5);
+  --shadow-lg: 0 28px 70px -20px rgb(0 0 0 / .8), 0 10px 24px -14px rgb(0 0 0 / .6);
+
+  --p1: #e8b339;  --p1-ink: #f0c360;  --p1-wash: #2a2313;
+  --p2: #4bc4d8;  --p2-ink: #6ed3e3;  --p2-wash: #10262b;
+  --p3: #a58cf5;  --p3-ink: #b9a6f8;  --p3-wash: #1f1b31;
+  --p4: #f0706a;  --p4-ink: #f68d88;  --p4-wash: #2e1817;
+  --p5: #5fca7c;  --p5-ink: #83d99a;  --p5-wash: #13261a;
+  --p6: #6f9ef0;  --p6-ink: #8fb4f4;  --p6-wash: #161f31;
+  --p7: #ee7ab0;  --p7-ink: #f298c3;  --p7-wash: #2c1723;
+
+  --danger: #f0706a;
+  --danger-wash: #2e1817;
+  --ok: #5fca7c;
+
+  --syn-comment: #868d9b;
+  --syn-doc:     #7f9a6d;
+  --syn-key:     #cf8ce0;
+  --syn-fn:      #7fb0f5;
+  --syn-type:    #5fc9db;
+  --syn-str:     #8ed49f;
+  --syn-num:     #e8a95e;
+  --syn-attr:    #d3ab5c;
+  --syn-punct:   #8d95a3;
+  --syn-macro:   #f0706a;
+
+  --sel: rgb(232 179 57 / .22);
+}
+
+/* Part accent is set on <body data-part="p3"> by the router. */
+body[data-part="p1"] { --accent: var(--p1); --accent-ink: var(--p1-ink); --accent-wash: var(--p1-wash); }
+body[data-part="p2"] { --accent: var(--p2); --accent-ink: var(--p2-ink); --accent-wash: var(--p2-wash); }
+body[data-part="p3"] { --accent: var(--p3); --accent-ink: var(--p3-ink); --accent-wash: var(--p3-wash); }
+body[data-part="p4"] { --accent: var(--p4); --accent-ink: var(--p4-ink); --accent-wash: var(--p4-wash); }
+body[data-part="p5"] { --accent: var(--p5); --accent-ink: var(--p5-ink); --accent-wash: var(--p5-wash); }
+body[data-part="p6"] { --accent: var(--p6); --accent-ink: var(--p6-ink); --accent-wash: var(--p6-wash); }
+body[data-part="p7"] { --accent: var(--p7); --accent-ink: var(--p7-ink); --accent-wash: var(--p7-wash); }
