@@ -121,6 +121,74 @@ export function code(text, lang = "text", label = "") {
   </figure>`;
 }
 
+/* -- a worked example ----------------------------------------------------
+   A trace rather than a claim: one concrete scenario, the steps the code takes
+   through it, and the literal text at each step. Deliberately unlike `snip` —
+   an excerpt is verbatim source with a line-number gutter, an example is
+   assembled to show shape, and the chrome says which one you are looking at.
+
+   `source` names the file in the clone the literal text was built from — a
+   snapshot test, a golden file, a fixture. check-content.mjs requires it to
+   exist, and holds any step marked `verbatim: true` to actually appearing in
+   it. An example with no `source` is fine; it is just not checkable, so say in
+   `note` which numbers are illustrative.                                     */
+export function example({ title = "", scenario = "", steps = [], note = "", source = "" }) {
+  const sources = (Array.isArray(source) ? source : [source]).filter(Boolean);
+
+  const body = steps
+    .map((s) =>
+      `<li>${
+        s.t ? `<div class="eg__t">${s.t}</div>` : ""
+      }${s.d ? `<div class="eg__d">${s.d}</div>` : ""}${
+        s.code ? wire(s.code, s.lang || "wire", s.label || "", { verbatim: s.verbatim }) : ""
+      }</li>`,
+    )
+    .join("");
+
+  return `<section class="eg">
+    <div class="eg__head">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6M10 3v6.2L4.8 18A2 2 0 006.5 21h11a2 2 0 001.7-3L14 9.2V3"/><path d="M7.5 15h9"/></svg>
+      <span class="eg__label">Worked example</span>
+      ${title ? `<span class="eg__title">${title}</span>` : ""}
+    </div>
+    <div class="eg__body">
+      ${scenario ? `<p class="eg__scenario">${scenario}</p>` : ""}
+      ${body ? `<ol class="eg__steps">${body}</ol>` : ""}
+      ${note ? `<p class="eg__note">${note}</p>` : ""}
+      ${
+        sources.length
+          ? `<p class="eg__src">Built from ${sources
+              .map((p) => `<code>${escapeHtml(p)}</code>`)
+              .join(" · ")}</p>`
+          : ""
+      }
+    </div>
+  </section>`;
+}
+
+/**
+ * A literal blob: what a file holds, what went over the wire, what a tool
+ * returned. No line-number gutter and no permalink — these are bytes, not a
+ * place in a file. `opts.verbatim` marks the block as copied from the
+ * example's `source`, which both labels it for the reader and asks the checker
+ * to prove it.
+ */
+export function wire(text, lang = "wire", label = "", opts = {}) {
+  const lines = highlightLines(text.replace(/^\n+|\n+$/g, ""), lang)
+    .map((h) => `<span class="wl">${h || "&nbsp;"}</span>`)
+    .join("");
+  const cap =
+    label || opts.verbatim
+      ? `<figcaption class="wire__label">${escapeHtml(label)}${
+          opts.verbatim ? `<span class="wire__vb" title="Copied from the file this example cites">verbatim</span>` : ""
+        }</figcaption>`
+      : "";
+  return `<figure class="wire">
+    ${cap}
+    <pre><code>${lines}</code></pre>
+  </figure>`;
+}
+
 /* -- the transferable pattern -------------------------------------------- */
 export function pattern({ title = "", invariants = [], pseudo = "", note = "" }) {
   return `<section class="pattern">

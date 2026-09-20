@@ -2,11 +2,13 @@
 /**
  * check-content.mjs — verify the guide's claims against the clone.
  *
- * Catches the four ways prose and source drift apart:
+ * Catches the ways prose and source drift apart:
  *   1. a chapter cites a snippet id that does not exist
  *   2. a callout is anchored to a line outside (or hidden inside) its snippet
  *   3. a "read next" pointer names a file that is not in the clone
  *   4. a <q> quotation is not word for word in the clone
+ *   5. an example cites a source file that is not in the clone, or marks a
+ *      block `verbatim` that is not actually in that file
  *
  * Also reports snippets declared in the manifest but never used, so the
  * manifest does not accumulate dead weight.
@@ -46,6 +48,9 @@ const problems = [];
 const warnings = [];
 const usedSnippets = new Set();
 let checkedQuotes = 0;
+let examples = 0;
+let wireBlocks = 0;
+let verbatimBlocks = 0;
 const knownWidgets = new Set(
   readdirSync(WIDGETS)
     .filter((f) => f.endsWith(".js") && f !== "index.js")
@@ -73,6 +78,69 @@ function balanced(text, from) {
     if (ch === '"' || ch === "'" || ch === "`") quote = ch;
     else if (ch === "{") depth++;
     else if (ch === "}" && --depth === 0) return text.slice(open, i + 1);
+  }
+  return null;
+}
+
+/** Like `balanced`, for the `[...]` after `steps:`. */
+function bracketed(text, from) {
+  if (from < 0) return null;
+  const open = text.indexOf("[", from);
+  if (open === -1) return null;
+  let depth = 0;
+  let quote = null;
+  for (let i = open; i < text.length; i++) {
+    const ch = text[i];
+    if (quote) {
+      if (ch === "\\") i++;
+      else if (ch === quote) quote = null;
+      continue;
+    }
+    if (ch === '"' || ch === "'" || ch === "`") quote = ch;
+    else if (ch === "[") depth++;
+    else if (ch === "]" && --depth === 0) return text.slice(open, i + 1);
+  }
+  return null;
+}
+
+/** Every top-level `{...}` inside `text` — the step objects of a steps array. */
+function objectsIn(text) {
+  const out = [];
+  let i = 0;
+  while (i < text.length) {
+    const open = text.indexOf("{", i);
+    if (open === -1) break;
+    const obj = balanced(text, open);
+    if (!obj) break;
+    out.push(obj);
+    i = open + obj.length;
+  }
+  return out;
+}
+
+/**
+ * The raw value of `key:` when it is a string or template literal, with the
+ * JS escapes a template literal needs undone — so the text compared against
+ * the clone is the text the reader sees.
+ */
+function literalAfter(text, key) {
+  const at = text.search(new RegExp(`(^|[{,\\s])${key}\\s*:`));
+  if (at === -1) return null;
+  const from = text.indexOf(":", at) + 1;
+  let i = from;
+  while (i < text.length && /\s/.test(text[i])) i++;
+  const q = text[i];
+  if (q !== "`" && q !== '"' && q !== "'") return null;
+  let out = "";
+  for (i++; i < text.length; i++) {
+    if (text[i] === "\\") {
+      const next = text[i + 1];
+      out += next === "n" ? "\n" : next === "t" ? "\t" : next;
+      i++;
+      continue;
+    }
+    if (text[i] === q) return out;
+    out += text[i];
   }
   return null;
 }
@@ -140,6 +208,61 @@ for (const file of files) {
   for (const wm of src.matchAll(/widget\(\s*"([^"]+)"\s*\)/g)) {
     if (!knownWidgets.has(wm[1])) {
       problems.push(`${where}: widget("${wm[1]}") — no widgets/${wm[1]}.js`);
+    }
+  }
+
+  /* --- worked examples --------------------------------------------------
+     An example is assembled rather than extracted, so most of it cannot be
+     checked. Two parts can. `source` names the file in the clone the literal
+     text was built from — a snapshot test, a golden file, a fixture — and it
+     has to exist. A step marked `verbatim: true` claims its block was copied
+     from that file, and this proves it, ignoring how it was re-indented.
+
+     Nothing forces an example to have a `source`: some are pure illustration,
+     and pretending otherwise would be the dishonest option. The summary line
+     prints how many are anchored, so the ratio stays visible. */
+  for (const m of src.matchAll(/\bexample\(\s*\{/g)) {
+    if (src.slice(Math.max(0, m.index - 3), m.index) === "\\${") continue; // DSL docs
+    const block = balanced(src, m.index);
+    if (!block) continue;
+    examples++;
+
+    const sourceList = literalAfter(block, "source");
+    const sources = sourceList
+      ? [sourceList]
+      : [...(block.match(/source\s*:\s*\[([^\]]*)\]/)?.[1] ?? "").matchAll(/"([^"]+)"/g)].map(
+          (s) => s[1],
+        );
+
+    const corpus = [];
+    for (const rel of sources) {
+      const abs = path.join(CLONE, rel);
+      if (!existsSync(abs)) {
+        problems.push(`${where}: example source is not in the clone — ${rel}`);
+        continue;
+      }
+      if (statSync(abs).isFile()) corpus.push([rel, readFileSync(abs, "utf8")]);
+    }
+
+    const steps = bracketed(block, block.indexOf("steps"));
+    for (const step of steps ? objectsIn(steps.slice(1, -1)) : []) {
+      const code = literalAfter(step, "code");
+      if (code === null) continue;
+      wireBlocks++;
+      if (!/\bverbatim\s*:\s*true\b/.test(step)) continue;
+      verbatimBlocks++;
+
+      const squash = (s) => s.replace(/\s+/g, " ").trim();
+      const want = squash(code);
+      if (!sources.length) {
+        problems.push(
+          `${where}: a step is marked verbatim but its example has no source: to check it against`,
+        );
+      } else if (!corpus.some(([, text]) => squash(text).includes(want))) {
+        problems.push(
+          `${where}: verbatim block is not in ${sources.join(" or ")} — “${want.slice(0, 70)}”`,
+        );
+      }
     }
   }
 
@@ -255,8 +378,15 @@ if (!problems.length) {
     green(`\n  ✓ ${chapters} chapters check out`) +
       dim(
         ` — ${usedSnippets.size} snippets used, all callouts in range, all paths exist,` +
-          ` ${checkedQuotes} quotations verbatim\n`,
-      ),
+          ` ${checkedQuotes} quotations verbatim`,
+      ) +
+      (examples
+        ? dim(
+            `\n    ${examples} examples · ${wireBlocks} literal blocks · ` +
+              `${verbatimBlocks} checked against a cited file`,
+          )
+        : "") +
+      "\n",
   );
 }
 process.exit(problems.length ? 1 : 0);

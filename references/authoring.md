@@ -9,12 +9,13 @@ for the first chapter; delete it once a real one exists.
 
 ## The rhythm
 
-Five beats, always in this order. It is what lets someone read twenty chapters without fatigue —
+Six beats, always in this order. It is what lets someone read twenty chapters without fatigue —
 they learn the shape once and then know where to look.
 
 ```
 problem()     the question, in two sentences, with no jargon
 snip()        how the code answers it — verbatim, annotated
+example()     one concrete case, traced end to end (1–3 per chapter)
 pattern()     the transferable shape: invariants + pseudocode
 traps()       what breaks if you get it wrong
 readNext()    where to go in the clone
@@ -49,7 +50,32 @@ about forty-five implementations across the crate").
 Use `code(text, lang, label)` for anything *not* from the repo: pseudocode, a config sample, a
 shell line, a paraphrased enum. It never claims a source, so it cannot misquote one.
 
-### 3 · The pattern
+### 3 · The worked example
+
+`example({ title, scenario, steps, note, source })`. A chapter can be entirely correct and still
+leave the reader unable to picture anything. The example fixes that by refusing to generalise: one
+scenario in the reader's own terms ("you press Ctrl-C"), then the steps the code takes, and at each
+step the **literal text** — what went into the request, what the function returned, what the file
+on disk now holds.
+
+Get that text out of the repository, not out of your head:
+
+```bash
+node <skill>/scripts/find-fixtures.mjs --clone <path> --grep <term>
+```
+
+Snapshot tests, golden files and fixtures are the good sources, because something fails when they
+go stale. Cite the file in `source`, mark the blocks you genuinely copied with `verbatim: true`,
+and `check-content.mjs` proves both. An example with no `source` is legitimate — some are pure
+illustration — but say so in `note`, and never let a reconstruction look like a recording.
+
+Multiple cases beat one happy path. "Four texts, one question" and "the same command under four
+policies" teach the rule and its edges at once. Three to six steps; past that it is two examples.
+
+`references/examples.md` has where the bytes live in each ecosystem, what you may and may not
+change when abridging, and what happens when a repository keeps no recorded output at all.
+
+### 4 · The pattern
 
 The reason the guide is useful to someone writing in another language. Four to six invariants,
 each starting with a bolded imperative and followed by one or two sentences of why. Then
@@ -58,14 +84,14 @@ pseudocode short enough to hold in the head — twenty lines at the outside.
 Nothing in a pattern card should mention the repository, its types, or its language. If an
 invariant only makes sense with the source in front of you, it is a note, not an invariant.
 
-### 4 · The traps
+### 5 · The traps
 
 A trap is a failure mode with a symptom, not a warning. "You will get an unknown-tool error you
 cannot reproduce" teaches; "be careful here" does not. Take them from what the code visibly
 defends against — a comment explaining a delay, a special case, a test named after a bug. Three
 to five.
 
-### 5 · Read next
+### 6 · Read next
 
 Two to four paths into the clone, each with one line on what the reader will find. The checker
 requires every path to exist, so a rename fails the build instead of sending the reader nowhere.
@@ -76,6 +102,8 @@ requires every path to exist, so a rename fails the build instead of sending the
 |---|---|
 | `problem(html)` | The opening block. One per chapter. |
 | `snip(id, opts)` | A pinned excerpt. `opts`: `notes` (line → html), `hl` (lines), `caption`. |
+| `example({title, scenario, steps, note, source})` | One case, traced. A step is `{t, d, label, code, lang, verbatim}`. `source` is a path in the clone and is checked; a `verbatim` step is checked to be in it. |
+| `wire(text, lang, label, {verbatim})` | A literal blob on its own: bytes, not a place in a file. |
 | `code(text, lang, label)` | Code that is not from the repo. |
 | `pattern({title, invariants, pseudo, note})` | The distillation. One per chapter. |
 | `traps([{t, b}])` | Failure modes. |

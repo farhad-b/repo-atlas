@@ -394,3 +394,132 @@
   font-style: italic;
   quotes: "“" "”" "‘" "’";
 }
+
+/* ---- worked example -----------------------------------------------------
+   Visually a sibling of .pattern, but neutral rather than accented: the
+   pattern card states a rule, this one only walks through one case. The step
+   list uses absolute markers, never grid — see the note on ol.inv above.   */
+.eg {
+  margin: var(--s7) 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--bg-raised);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+.eg__head {
+  display: flex; align-items: center; gap: var(--s3); flex-wrap: wrap;
+  padding: var(--s3) var(--s5);
+  background: var(--bg-sunk);
+  border-bottom: 1px solid var(--line);
+}
+.eg__head svg {
+  width: 15px; height: 15px; flex: none;
+  color: var(--ink-soft); fill: none;
+  stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round;
+}
+.eg__label {
+  font-family: var(--font-mono);
+  font-size: var(--fs-micro); font-weight: 700;
+  letter-spacing: .1em; text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.eg__title {
+  font-size: var(--fs-small); color: var(--ink-soft);
+  margin-left: auto; text-align: right;
+}
+
+.eg__body { padding: var(--s5); }
+
+.eg__scenario {
+  margin: 0 0 var(--s5);
+  padding-left: var(--s4);
+  border-left: 2px solid var(--line-strong);
+  font-size: 0.9375rem; line-height: 1.6;
+  color: var(--ink);
+}
+
+.eg__steps { list-style: none; counter-reset: eg; padding: 0; margin: 0; }
+.eg__steps > li {
+  counter-increment: eg;
+  position: relative;
+  padding-left: 2.25rem; padding-bottom: var(--s5);
+  margin: 0;
+}
+.eg__steps > li:last-child { padding-bottom: 0; }
+.eg__steps > li::before {
+  content: counter(eg);
+  position: absolute; left: 0; top: 0;
+  display: grid; place-items: center;
+  width: 1.5rem; height: 1.5rem;
+  border-radius: var(--radius-sm);
+  background: var(--accent-wash);
+  border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+  color: var(--accent-ink);
+  font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+}
+/* the thread between one step and the next */
+.eg__steps > li::after {
+  content: "";
+  position: absolute; left: calc(.75rem - 1px); top: 1.85rem; bottom: .35rem;
+  border-left: 1px dashed var(--line-strong);
+}
+.eg__steps > li:last-child::after { content: none; }
+
+.eg__t { font-weight: 650; color: var(--ink-strong); line-height: 1.45; }
+.eg__d { font-size: 0.9375rem; color: var(--ink-soft); line-height: 1.6; margin-top: 3px; }
+.eg__d p { margin: 0; }
+.eg__d p + p { margin-top: var(--s2); }
+.eg__note {
+  margin: var(--s5) 0 0; padding-top: var(--s4);
+  border-top: 1px dashed var(--line);
+  font-size: var(--fs-small); color: var(--ink-soft); line-height: 1.6;
+}
+/* Where the literal text came from. Checked, so it is worth showing. */
+.eg__src {
+  margin: var(--s3) 0 0;
+  font-size: var(--fs-micro); color: var(--ink-faint); line-height: 1.6;
+}
+.eg__src code {
+  font-family: var(--font-mono); font-size: 1em;
+  color: var(--ink-soft); background: none; border: 0; padding: 0;
+  word-break: break-all;
+}
+.eg__note + .eg__src { margin-top: var(--s2); padding-top: 0; border-top: 0; }
+
+/* ---- a literal blob ----------------------------------------------------
+   Bytes, not a place in a file: no line-number gutter and no permalink.   */
+.wire {
+  margin: var(--s3) 0 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--bg-code);
+  overflow: hidden;
+}
+.wire figcaption {
+  display: flex; align-items: center; gap: var(--s3); flex-wrap: wrap;
+  padding: var(--s2) var(--s4);
+  background: var(--bg-sunk);
+  border-bottom: 1px solid var(--line-soft);
+  font-family: var(--font-mono); font-size: var(--fs-micro);
+  line-height: 1.5;
+  color: var(--ink-faint);
+}
+/* This block is copied from the cited file, and the checker proves it. */
+.wire__vb {
+  padding: 1px 7px; border-radius: 100px;
+  border: 1px solid color-mix(in srgb, var(--ok) 40%, transparent);
+  background: color-mix(in srgb, var(--ok) 10%, transparent);
+  color: var(--ok);
+  font-size: 10px; letter-spacing: .06em; text-transform: uppercase;
+}
+/* Right-aligned when there is room; inline after the label when there is not,
+   rather than pushed onto a line of its own on a phone. */
+@media (min-width: 560px) { .wire__vb { margin-left: auto; } }
+.wire pre { margin: 0; padding: var(--s3) 0; overflow-x: auto; }
+.wire code {
+  display: block; white-space: pre;
+  font-family: var(--font-mono); font-size: var(--fs-code);
+  line-height: var(--lh-code); tab-size: 4;
+}
+.wl { display: block; padding-inline: var(--s4) var(--s5); }

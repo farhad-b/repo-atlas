@@ -1,7 +1,7 @@
 ---
 name: repo-atlas
-description: "Build a local, offline web guide that teaches how a real codebase works, from its own source — annotated verbatim excerpts pinned by anchor text, language-agnostic pattern distillations, interactive diagrams, and checks that fail when the prose drifts from the code. Use when the user wants to learn or teach an unfamiliar repository: an atlas, a guided reading, a deep-dive walkthrough, an architecture guide, a tutorial or onboarding site built from a repo. Includes a zero-build scaffold, so the work is reviewing and writing, not plumbing."
-version: 1.0.0
+description: "Build a local, offline web guide that teaches how a real codebase works, from its own source — annotated verbatim excerpts pinned by anchor text, worked examples built from the repository's own snapshot tests and fixtures, language-agnostic pattern distillations, interactive diagrams, and checks that fail when the prose drifts from the code. Use when the user wants to learn or teach an unfamiliar repository: an atlas, a guided reading, a deep-dive walkthrough, an architecture guide, a tutorial or onboarding site built from a repo. Includes a zero-build scaffold, so the work is reviewing and writing, not plumbing."
+version: 1.1.0
 ---
 
 # Repo Atlas
@@ -13,16 +13,20 @@ verification tools, and the editorial rules that keep the guide honest.
 ## What makes this different from a summary
 
 Anyone can ask a model to explain a repository. The output is plausible, unverifiable, and stale
-within a week. An atlas is different in four ways, and each one is enforced mechanically:
+within a week. An atlas is different in five ways, and each one is enforced mechanically:
 
 1. **Nothing is retyped.** Every excerpt is extracted from the clone on disk, with its real line
    numbers and a commit-pinned permalink. Excerpts are declared by *anchor text*, never a line
    number, so the build fails loudly when the code moves instead of quietly lying.
 2. **Nothing is paraphrased inside quotation marks.** Words attributed to the source are checked
    against the clone word for word.
-3. **Every chapter ends in something portable.** The reader gets the pattern — the invariants and
+3. **The examples are recordings, not reconstructions.** What a subsystem actually produces comes
+   out of the repository's own snapshot tests, golden files and fixtures — files that get
+   regenerated and reviewed when the format changes. A block marked as copied is checked to be in
+   the file it cites.
+4. **Every chapter ends in something portable.** The reader gets the pattern — the invariants and
    the pseudocode — not just a tour of someone else's identifiers.
-4. **It is verified in a browser**, not just in a terminal. Layout bugs are content bugs: a
+5. **It is verified in a browser**, not just in a terminal. Layout bugs are content bugs: a
    sentence split across a grid column is unreadable however correct the prose is.
 
 ## Before you start
@@ -79,6 +83,15 @@ What to look for, in order of teaching value:
 - **Special cases with a date or a bug number.** Every one is a trap someone already hit.
 - **Anything the code does twice, differently** — that is a comparison worth a widget.
 
+In the same pass, find what the repository *records*. Snapshot tests, golden files and fixtures
+are the raw material for every worked example, and they are evidence in their own right — a
+subsystem with forty snapshots and one with none are telling you where the risk is:
+
+```bash
+node ~/.claude/skills/repo-atlas/scripts/find-fixtures.mjs --clone <path>
+node ~/.claude/skills/repo-atlas/scripts/find-fixtures.mjs --grep <term> --peek 6
+```
+
 See `references/review.md` for the full method, the subagent brief to copy, and how to choose a
 syllabus from the repository's own seams rather than a generic checklist.
 
@@ -106,19 +119,24 @@ about 15 and 60 lines; if an excerpt needs more than four notes, it is two excer
 
 ### 4 · Write the chapters
 
-Every chapter follows the same five-beat rhythm — problem, source, pattern, traps, read next.
-`references/authoring.md` has the DSL reference and the prose rules. The two that matter most:
+Every chapter follows the same six-beat rhythm — problem, source, example, pattern, traps, read
+next. `references/authoring.md` has the DSL reference and the prose rules. The three that matter
+most:
 
 - **Notes say why, not what.** The reader can see what the line does. Tell them what it means and
   what breaks without it.
 - **A quotation is a promise.** Use `<q>` for the source's own words, never an ellipsis inside
   one, and never a capital letter the source did not have. Quote each fragment separately instead.
+- **An example is a recording.** Build it from a fixture, cite the file in `source`, and mark the
+  blocks you copied `verbatim: true`. If you had to invent the payload, leave `source` out and say
+  so in the note. `references/examples.md` has the method, including what to do when the
+  repository records nothing.
 
 ### 5 · Verify
 
 ```bash
 node tools/extract-snippets.mjs --check   # every anchor still resolves, uniquely
-node tools/check-content.mjs              # citations, callout lines, paths, quotations
+node tools/check-content.mjs              # citations, callouts, paths, quotations, examples
 ```
 
 Then in the browser, at several widths and in both themes:
@@ -141,6 +159,9 @@ These are not style preferences. Each one exists because breaking it produced a 
   generated, never typed.
 - **Never quote and edit.** No ellipsis, no changed case, no dropped hedge, no straightened
   Unicode. If a quotation is too long, quote a shorter part of it.
+- **Never invent a payload.** What a subsystem produces comes from a fixture, or from running it
+  and saying you did. Re-indenting a recorded block is fine; changing a value in one and still
+  calling it `verbatim` is the same lie as editing a quotation.
 - **Never write a count you did not count.** "The three back edges" goes stale the moment a fourth
   appears. Derive counts where you can; check them where you cannot.
 - **Never claim behaviour you did not read.** If a subagent reports something you cannot find in
@@ -154,10 +175,12 @@ These are not style preferences. Each one exists because breaking it produced a 
 
 ```
 scripts/init-atlas.mjs      scaffold an atlas next to a clone
+scripts/find-fixtures.mjs   find the snapshots, golden files and fixtures to build examples from
 assets/atlas/               what it copies: the app, the tools, the config
 references/review.md        how to read a large repo and choose a syllabus
 references/manifest.md      anchors, elision, offsets, failure modes
 references/authoring.md     the chapter rhythm, the DSL, the prose rules
+references/examples.md      worked examples: where the bytes come from, and how to abridge them
 references/widgets.md       the four archetypes, and when one earns its place
 references/verification.md  the checks, and how to add one
 ```

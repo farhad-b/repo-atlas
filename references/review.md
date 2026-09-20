@@ -14,6 +14,7 @@ tokei <clone> 2>/dev/null || cloc <clone> 2>/dev/null      # where is the mass
 ls <clone>                                                 # top-level seams
 cat <clone>/README.md <clone>/ARCHITECTURE.md 2>/dev/null
 ls <clone>/docs 2>/dev/null
+node <skill>/scripts/find-fixtures.mjs --clone <clone>     # what the repo records
 ```
 
 Then find the repository's own seams. A well-factored repo tells you its subsystems in its
@@ -44,7 +45,10 @@ One subagent per subsystem, in parallel. Give each the same brief:
 > 4. **The invariant** — what this code guarantees that callers rely on. One sentence.
 > 5. **Traps** — what the code visibly defends against: comments explaining a delay or an
 >    ordering, special cases, tests named after a bug. Quote the comment or the test name.
-> 6. **What surprised you** — the thing that was not what you expected before reading.
+> 6. **Recorded output** — any snapshot test, golden file or fixture that shows this subsystem's
+>    real input or output. Give the path and one line on the scenario it records. If there is
+>    none, say so.
+> 7. **What surprised you** — the thing that was not what you expected before reading.
 >
 > Quote anchors exactly, including comment markers and indentation. Do not paraphrase code.
 
@@ -52,8 +56,26 @@ Then **verify the returned anchors yourself** before they enter the manifest —
 this for you the moment you run it, which is why the manifest comes before the prose. An anchor
 that does not resolve uniquely is a report you should not trust the rest of.
 
-Item 6 is not filler. The thing that surprised a careful reader is usually the thing worth
+Item 7 is not filler. The thing that surprised a careful reader is usually the thing worth
 teaching, and it is where chapter theses come from.
+
+## Mine the recorded output
+
+Reading tells you what the code does. A snapshot tells you what it *produced*, in bytes, on a day
+someone reviewed. The two answer different questions, and a guide needs both: the excerpt for the
+mechanism, the recording for the worked example that makes it concrete.
+
+```bash
+node <skill>/scripts/find-fixtures.mjs --clone <clone> --dir <subsystem> --peek 6
+node <skill>/scripts/find-fixtures.mjs --clone <clone> --grep <a term from the chapter>
+```
+
+Do this **during** the review, not after. What the repository records is evidence about what it
+considers important — a subsystem with forty snapshots and one with none are telling you something
+about where the risk is — and finding the fixture after the chapter is written means writing the
+example around what you already said rather than around what is true.
+
+`references/examples.md` covers what to do with them, and what to do when there are none.
 
 ## What to look for, ranked
 

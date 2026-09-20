@@ -9,15 +9,16 @@
 
      1  problem()   the question, in two sentences, with no jargon
      2  snip()      how the code answers it — verbatim, annotated
-     3  pattern()   the transferable shape: invariants + pseudocode
-     4  traps()     what breaks if you get it wrong
-     5  readNext()  where to go in the clone
+     3  example()   one concrete case, traced end to end
+     4  pattern()   the transferable shape: invariants + pseudocode
+     5  traps()     what breaks if you get it wrong
+     6  readNext()  where to go in the clone
 
    Delete this file once your first real chapter exists.
    ========================================================================= */
 
 import {
-  snip, code, pattern, traps, key, table, cards, stats, readNext, widget, problem, c,
+  snip, code, example, pattern, traps, key, table, cards, stats, readNext, widget, problem, c,
 } from "../assets/js/dsl.js";
 
 export function render() {
@@ -68,6 +69,66 @@ ${code(`\${snip("fragment-trait", {
 
 ${key(`A key fact gets its own line and its own colour. Use it about once per chapter: the
   sentence you would keep if the reader kept only one.`)}
+
+<h2 id="a-worked-example">A worked example</h2>
+
+<p>
+  An excerpt shows what the code <em>is</em>. An example shows what it <em>does</em>, to something
+  specific, with the literal text at each step. Find that text in the repository rather than
+  inventing it — ${c("node <skill>/scripts/find-fixtures.mjs")} lists the snapshots, golden files
+  and fixtures this clone already keeps under test.
+</p>
+
+${example({
+  title: "One request, three turns",
+  scenario: `Open with a concrete situation in the reader's own terms — <code>a session starts in
+    /repo</code>, <code>you press Ctrl-C</code>, <code>the window fills during a tool call</code>.
+    Never a category of situation.`,
+  steps: [
+    {
+      t: "A step is a short claim, not a label",
+      d: `Then one or two sentences of why. The <code>code</code> field is the literal text: what
+        went into the request, what the tool returned, what a file now holds.`,
+      label: "what the label says the bytes are",
+      code: `<environment_context>
+  <cwd>/repo</cwd>
+</environment_context>`,
+    },
+    {
+      t: "Contrast beats completeness",
+      d: `A second case that behaves differently teaches the rule and its edge at once. Three to
+        six steps; past that it is two examples.`,
+      label: "the same call, nothing changed",
+      code: `None`,
+    },
+  ],
+  note: `This example invents its blocks to demonstrate the helper, so it cites no source and
+    nothing checks it. Say so when that is true of yours, and keep it rare.`,
+})}
+
+<p>
+  An example built from something real says where it came from, and the parts that are genuinely
+  copied say so too:
+</p>
+
+${code(`\${example({
+  title: "One turn, as it lands on disk",
+  source: "core/tests/suite/compact.rs",   // must exist in the clone
+  steps: [{
+    t: "The history after a compaction",
+    d: \`Two items survive: the user's own message and the summary.\`,
+    label: "replacement history",
+    verbatim: true,                        // checked to be in that file
+    code: \`00:message/user:first manual turn
+01:message/user:<COMPACTION_SUMMARY>\`,
+  }],
+})}`, "js", "an anchored example — check-content.mjs proves both claims")}
+
+<p>
+  The check ignores indentation and line wrapping, so an abridged block still passes if every word
+  is the source's. It fails if a value was tidied, a field renamed, or a number rounded — which is
+  the whole point: the reader is told a block is copied, so it has to be.
+</p>
 
 <h2 id="the-pattern">The pattern</h2>
 

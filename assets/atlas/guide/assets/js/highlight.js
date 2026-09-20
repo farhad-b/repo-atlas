@@ -218,6 +218,17 @@ const RULES = {
 /* Close-enough aliases. A C-family file highlighted with the JS rules gets
    comments, strings and numbers right, which is most of the benefit; only the
    keyword set is approximate. */
+/* What the model actually receives: fragment markers, headings, key: value
+   lines. Not a real grammar — just enough structure to read a transcript. */
+RULES.wire = [
+  [/<\/?[A-Za-z_][A-Za-z0-9_.:-]*>/y, "t-typ"],
+  [/^\s*#{1,6}\s[^\n]*/my, "t-key"],
+  [/^\s*[A-Za-z_][A-Za-z0-9_ ()-]*:(?=\s|$)/my, "t-att"],
+  [/"(?:\\.|[^"\\])*"/y, "t-str"],
+  [/\b\d+(?:[._]\d+)*\b/y, "t-num"],
+  [/[|<>]+/y, "t-pun"],
+];
+
 RULES.ts = RULES.js;
 RULES.tsx = RULES.js;
 RULES.jsx = RULES.js;

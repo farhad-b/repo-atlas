@@ -24,6 +24,8 @@ otherwise show something that is no longer true.
 | every `readNext` path exists in the clone | a file renamed upstream |
 | every `widget("name")` has a module | a typo that renders "unknown widget" |
 | every `<q>` appears in the clone word for word | a quotation that drifted |
+| every `example({source})` path is in the clone | a fixture renamed out from under a citation |
+| every `verbatim: true` block is in that file | a "recorded" payload that was edited, rounded or invented |
 | unused manifest entries, links to chapters that do not exist | dead weight, dead links |
 
 The quotation check strips comment markers, joins lines and ignores Markdown emphasis, so a
@@ -31,6 +33,17 @@ quotation may span several lines of a doc comment. It refuses any `<q>` containi
 an ellipsis hides what was dropped, and that is exactly how a hedge goes missing. It also reports
 when a quotation matches only if case is ignored, because "A handoff summary" and "a handoff
 summary" are different quotations.
+
+The example checks hold a claim you chose to make. `source` says "this came from that file", and
+`verbatim: true` says "these bytes are in it" — so the checker resolves the path and searches the
+file, ignoring indentation and wrapping. Neither is required: an example with no `source` is
+legitimate, and the summary line prints the ratio
+(`28 examples · 77 literal blocks · 41 checked against a cited file`) so it stays visible rather
+than becoming a habit nobody notices.
+
+**What still is not checked is the unanchored part of an example** — the scenario, the step prose,
+and any block you did not mark. That is as true as you made it. Say in `note` which numbers are
+illustrative; an unmarked invented constant is the failure mode this part of a guide has.
 
 ### Add a check when a mistake gets past you
 
